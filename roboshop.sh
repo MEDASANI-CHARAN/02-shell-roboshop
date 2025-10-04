@@ -8,14 +8,34 @@ DOMAIN_NAME="daws2025.online"
 
 for instance in ${INSTANCES[@]}
 do
-aws ec2 run-instances \
---image-id ami-09c813fb71547fc4f \
---count 1 \
---instance-type t2.micro \
---security-group-ids sg-074b66f88e51305b4 \
---tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=test}]' \
---query 'Instances[0].InstanceId' \
---query 'Instances[0].PublicIpAddress' \
---query 'Instances[0].PrivateIpAddress' \
---output text
+INSTANCE_ID=$(aws ec2 run-instances \
+  --image-id $AMI_ID \
+  --count 1 \
+  --instance-type t2.micro \
+  --security-group-ids $SG_ID \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=test}]' \
+  --query 'Instances[0].InstanceId' \
+  --output text)
+
+aws ec2 describe-instances \
+  --instance-ids $INSTANCE_ID \
+  --query 'Reservations[0].Instances[0].[InstanceId,PublicIpAddress,PrivateIpAddress]' \
+  --output text 
+
+if [ $instance != "frontend" ]
+then
+    IP=$(aws ec2 describe-instances \
+    --instance-ids $INSTANCE_ID \
+    --query 'Reservations[0].Instances[0].PrivateIpAddress' \
+    --output text)
+else
+    IP=$(aws ec2 describe-instances \
+    --instance-ids $INSTANCE_ID \
+    --query 'Reservations[0].Instances[0].PublicIpAddress' \
+    --output text)
+
+echo "$instance IP address: $IP"
+
 done
+
+
