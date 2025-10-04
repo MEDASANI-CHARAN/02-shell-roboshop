@@ -35,7 +35,7 @@ else
     --output text)
 
 echo "$instance IP address: $IP"
-     
+      
 done
 
 
