@@ -18,7 +18,7 @@ fi
 # CREATE INSTANCES
 # --------------------------------------------------
 if [ "$ACTION" == "create" ]; then
-for instance in "${INSTANCES[@]}"
+# for instance in "${INSTANCES[@]}"
 for instance in "$@"
 do
     echo "Creating EC2 instance for: $instance"
