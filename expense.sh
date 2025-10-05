@@ -36,5 +36,23 @@ for instance in "$@"
     fi
 
     echo "$instance IP address: $IP"
+
+    # Create DNS record
+    aws route53 change-resource-record-sets \
+      --hosted-zone-id $ZONE_ID \
+      --change-batch '{
+        "Comment": "Add record for '$instance'",
+        "Changes": [{
+          "Action": "UPSERT",
+          "ResourceRecordSet": {
+            "Name": "'$instance'.'$DOMAIN_NAME'",
+            "Type": "A",
+            "TTL": 300,
+            "ResourceRecords": [{"Value": "'$IP'"}]
+          }
+        }]
+      }' >/dev/null
+
+    echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
     
   done
