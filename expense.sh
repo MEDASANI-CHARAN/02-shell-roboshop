@@ -83,28 +83,51 @@ if [ "$ACTION" == "create" ]; then
   done
 fi
 
+# # DELETE INSTANCES
+# if [ "$ACTION" == "delete" ]; then
+#   for instance in "${SELECTED_INSTANCES[@]}"; do
+#     echo "Terminating EC2 instance: $instance ..."
+
+#     # Get instance IDs as space-separated string
+#     INSTANCE_IDS=$(aws ec2 describe-instances \
+#       --filters "Name=tag:Name,Values=$instance" \
+#       --query 'Reservations[].Instances[].InstanceId' \
+#       --output text)
+
+#     if [ -n "$INSTANCE_IDS" ]; then
+#       aws ec2 terminate-instances --instance-ids $INSTANCE_IDS >/dev/null
+#       echo "Terminated instance: $instance ($INSTANCE_IDS)"
+#     else
+#       echo "No instance found with name: $instance"
+#     fi
+#     echo "==========================================================="
+#   done
+# fi
+
+
+# -------------------------------
 # DELETE INSTANCES
+# -------------------------------
 if [ "$ACTION" == "delete" ]; then
   for instance in "${SELECTED_INSTANCES[@]}"; do
     echo "Terminating EC2 instance: $instance ..."
 
-    # Get instance IDs as space-separated string
-    INSTANCE_IDS=$(aws ec2 describe-instances \
+    INSTANCE_ID=$(aws ec2 describe-instances \
       --filters "Name=tag:Name,Values=$instance" \
       --query 'Reservations[].Instances[].InstanceId' \
       --output text)
 
-    if [ -n "$INSTANCE_IDS" ]; then
-      aws ec2 terminate-instances --instance-ids $INSTANCE_IDS >/dev/null
-      echo "Terminated instance: $instance ($INSTANCE_IDS)"
+    if [ -n "$INSTANCE_ID" ]; then
+      aws ec2 terminate-instances --instance-ids "$INSTANCE_ID" >/dev/null
+      echo "Terminated instance: $instance ($INSTANCE_ID)"
     else
       echo "No instance found with name: $instance"
     fi
-    echo "==========================================================="
+    echo "
+    ===========================================================
+    "
   done
 fi
-
-
 
 
 
