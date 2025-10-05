@@ -7,6 +7,7 @@ ZONE_ID="Z079925038GKLPVTTRWKU"
 DOMAIN_NAME="daws2025.online"
 
 ACTION=$1   # This will store the first argument (create or delete)
+shift  # Shift arguments so that $@ now contains instance names (or) remove first argument, now $@ contains only instance names
 
 # If no specific instances are provided, use all
 if [ $# -eq 0 ]; then
