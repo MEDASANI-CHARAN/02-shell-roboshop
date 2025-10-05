@@ -8,7 +8,7 @@ DOMAIN_NAME="daws2025.online"
 
 # for instance in "${INSTANCES[@]}"
 for instance in "$@"
-  do
+do
     echo "Creating EC2 instance for: $instance"
 
     INSTANCE_ID=$(aws ec2 run-instances \
@@ -57,5 +57,22 @@ for instance in "$@"
     echo "
 ===========================================================
 "
+done
 
-  done
+#   for instance in "${INSTANCES[@]}"
+for instance in "$@"
+do
+    echo "Terminating EC2 instance: $instance ..."
+
+    INSTANCE_ID=$(aws ec2 describe-instances \
+        --filters "Name=tag:Name,Values=$instance" \
+        --query 'Reservations[*].Instances[*].InstanceId' \
+        --output text)
+
+    if [ -n "$INSTANCE_ID" ]; then
+        aws ec2 terminate-instances --instance-ids $INSTANCE_ID >/dev/null
+        echo "Terminated instance: $instance ($INSTANCE_ID)"
+    else
+        echo "No instance found with name: $instance"
+    fi
+done
