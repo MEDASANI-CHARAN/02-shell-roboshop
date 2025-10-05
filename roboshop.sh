@@ -8,6 +8,13 @@ DOMAIN_NAME="daws2025.online"
 
 ACTION=$1   # This will store the first argument (create or delete)
 
+# If no specific instances are provided, use all
+if [ $# -eq 0 ]; then
+  INSTANCES=("${ALL_INSTANCES[@]}")
+else
+  INSTANCES=("$@")
+fi
+
 if [ -z "$ACTION" ]; then
   echo "Usage: $0 {create|delete}"
   exit 1
