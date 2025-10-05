@@ -11,7 +11,7 @@ shift  # Shift arguments so that $@ now contains instance names (or) remove firs
 
 # If no specific instances are provided, use all
 if [ $# -eq 0 ]; then
-  INSTANCES=("${ALL_INSTANCES[@]}")
+  INSTANCES=("${INSTANCES[@]}")
 else
   INSTANCES=("$@")
 fi
