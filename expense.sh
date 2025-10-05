@@ -6,59 +6,76 @@ INSTANCES=("mysql" "backend" "frontend")
 ZONE_ID="Z079925038GKLPVTTRWKU"
 DOMAIN_NAME="daws2025.online"
 
-# for instance in "${INSTANCES[@]}"
-# for instance in "$@"
-# do
-#     echo "Creating EC2 instance for: $instance"
+ACTION=$1   # This will store the first argument (create or delete)
+shift  # Shift arguments so that $@ now contains instance names (or) remove first argument, now $@ contains only instance names
 
-#     INSTANCE_ID=$(aws ec2 run-instances \
-#       --image-id $AMI_ID \
-#       --count 1 \
-#       --instance-type t2.micro \
-#       --security-group-ids $SG_ID \
-#       --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" \
-#       --query 'Instances[0].InstanceId' \
-#       --output text)
+if [ -z "$ACTION" ]; then
+  echo "Usage: $0 {create|delete}"
+  exit 1
+fi
 
-#     echo "$instance instance created with ID: $INSTANCE_ID"
+# --------------------------------------------------
+# CREATE INSTANCES
+# --------------------------------------------------
+if [ "$ACTION" == "create" ]; then
+for instance in "${INSTANCES[@]}"
+for instance in "$@"
+do
+    echo "Creating EC2 instance for: $instance"
 
-#     # Get IP address
-#     if [ "$instance" != "frontend" ]; then
-#       IP=$(aws ec2 describe-instances \
-#         --instance-ids $INSTANCE_ID \
-#         --query 'Reservations[0].Instances[0].PrivateIpAddress' \
-#         --output text)
-#     else
-#       IP=$(aws ec2 describe-instances \
-#         --instance-ids $INSTANCE_ID \
-#         --query 'Reservations[0].Instances[0].PublicIpAddress' \
-#         --output text)
-#     fi
+    INSTANCE_ID=$(aws ec2 run-instances \
+      --image-id $AMI_ID \
+      --count 1 \
+      --instance-type t2.micro \
+      --security-group-ids $SG_ID \
+      --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" \
+      --query 'Instances[0].InstanceId' \
+      --output text)
 
-#     echo "$instance IP address: $IP"
+    echo "$instance instance created with ID: $INSTANCE_ID"
 
-#     # Create DNS record
-#     aws route53 change-resource-record-sets \
-#       --hosted-zone-id $ZONE_ID \
-#       --change-batch '{
-#         "Comment": "Add record for '$instance'",
-#         "Changes": [{
-#           "Action": "UPSERT",
-#           "ResourceRecordSet": {
-#             "Name": "'$instance'.'$DOMAIN_NAME'",
-#             "Type": "A",
-#             "TTL": 300,
-#             "ResourceRecords": [{"Value": "'$IP'"}]
-#           }
-#         }]
-#       }' >/dev/null
+    # Get IP address
+    if [ "$instance" != "frontend" ]; then
+      IP=$(aws ec2 describe-instances \
+        --instance-ids $INSTANCE_ID \
+        --query 'Reservations[0].Instances[0].PrivateIpAddress' \
+        --output text)
+    else
+      IP=$(aws ec2 describe-instances \
+        --instance-ids $INSTANCE_ID \
+        --query 'Reservations[0].Instances[0].PublicIpAddress' \
+        --output text)
+    fi
 
-#     echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
-#     echo "
-# ===========================================================
-# "
-# done
+    echo "$instance IP address: $IP"
 
+    # Create DNS record
+    aws route53 change-resource-record-sets \
+      --hosted-zone-id $ZONE_ID \
+      --change-batch '{
+        "Comment": "Add record for '$instance'",
+        "Changes": [{
+          "Action": "UPSERT",
+          "ResourceRecordSet": {
+            "Name": "'$instance'.'$DOMAIN_NAME'",
+            "Type": "A",
+            "TTL": 300,
+            "ResourceRecords": [{"Value": "'$IP'"}]
+          }
+        }]
+      }' >/dev/null
+
+    echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
+    echo "
+===========================================================
+"
+done
+fi
+
+# --------------------------------------------------
+# DELETE INSTANCES
+# --------------------------------------------------
+if [ "$ACTION" == "delete" ]; then
 #   for instance in "${INSTANCES[@]}"
 for instance in "$@"
 do
@@ -75,4 +92,8 @@ do
     else
         echo "No instance found with name: $instance"
     fi
+    echo "
+===========================================================
+"
 done
+fi
