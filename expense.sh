@@ -16,7 +16,7 @@ ACTION=$1
 shift
 
 if [ -z "$ACTION" ]; then
-  echo "Usage: $0 {create|delete} [instance1 instance2 ... | all]"
+  echo "Usage: $0 {create|delete}]"
   exit 1
 fi
 
