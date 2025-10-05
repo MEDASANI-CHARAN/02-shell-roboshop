@@ -9,7 +9,7 @@ DOMAIN_NAME="daws2025.online"
 # for instance in "${INSTANCES[@]}"
 for instance in "$@"
   do
-    echo "Creating EC2 instance for: $instance ..."
+    echo "Creating EC2 instance for: $instance"
 
     INSTANCE_ID=$(aws ec2 run-instances \
       --image-id $AMI_ID \
@@ -19,4 +19,6 @@ for instance in "$@"
       --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" \
       --query 'Instances[0].InstanceId' \
       --output text)
+
+    echo "$instance instance created with ID: $INSTANCE_ID"
   done
