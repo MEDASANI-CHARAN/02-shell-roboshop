@@ -25,8 +25,8 @@ fi
 # CREATE INSTANCES
 # --------------------------------------------------
 if [ "$ACTION" == "create" ]; then
-  for instance in "${INSTANCES[@]}"
-#   for instance in "$@"
+#   for instance in "${INSTANCES[@]}"
+  for instance in "$@"
   do
     echo "Creating EC2 instance for: $instance ..."
 
@@ -81,8 +81,8 @@ fi
 # DELETE INSTANCES
 # --------------------------------------------------
 if [ "$ACTION" == "delete" ]; then
-  for instance in "${INSTANCES[@]}"
-#   for instance in "$@"
+#   for instance in "${INSTANCES[@]}"
+  for instance in "$@"
   do
     echo "Terminating EC2 instance: $instance ..."
     
