@@ -59,7 +59,7 @@ DOMAIN_NAME="daws2025.online"
 # "
 # done
 
-  for instance in "${INSTANCES[@]}"
+#   for instance in "${INSTANCES[@]}"
 for instance in "$@"
 do
     echo "Terminating EC2 instance: $instance ..."
