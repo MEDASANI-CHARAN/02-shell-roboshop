@@ -77,7 +77,9 @@ if [ "$ACTION" == "create" ]; then
       }' >/dev/null
 
     echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
-    echo "==========================================================="
+    echo "
+    ===========================================================
+    "
   done
 fi
 
@@ -99,7 +101,9 @@ if [ "$ACTION" == "delete" ]; then
     else
       echo "No instance found with name: $instance"
     fi
-    echo "==========================================================="
+    echo "
+    ===========================================================
+    "
   done
 fi
 
