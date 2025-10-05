@@ -54,5 +54,6 @@ for instance in "$@"
       }' >/dev/null
 
     echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
-    
+    echo "===========================================
+                                                     "
   done
