@@ -18,7 +18,7 @@ shift
 if [ -z "$ACTION" ]; then
   echo "Usage: $0 {create|delete}]"
   exit 1
-fi                              
+fi                                
 
 # Determine which instances to work on
 if [ $# -eq 0 ] || [[ "$1" == "all" ]]; then
