@@ -7,7 +7,7 @@
 # -------------------------------
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-074b66f88e51305b4"
-ALL_INSTANCES=("mysql" "backend" "frontend")
+ALL_INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping" "payment" "dispatch" "frontend")
 ZONE_ID="Z079925038GKLPVTTRWKU"
 DOMAIN_NAME="daws2025.online"
 
