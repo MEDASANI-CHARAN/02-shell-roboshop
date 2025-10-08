@@ -71,11 +71,11 @@ VALIDATE $? "Enabling catalogue"
 systemctl start catalogue &>>$LOG_FILE
 VALIDATE $? "Starting catalogue"
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
 VALIDATE $? "Copying MongoDB repo"
 
-dnf install mongodb-mongosh -y 
+dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing MongoDB"
 
-mongosh --host mongodb.daws2025.online </app/db/master-data.js
+mongosh --host mongodb.daws2025.online </app/db/master-data.js &>>$LOG_FILE
 VALIDATE $? "Loading master data into MongoDB"
