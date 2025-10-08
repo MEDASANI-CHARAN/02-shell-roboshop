@@ -89,7 +89,7 @@ aws route53 change-resource-record-sets \
   done
 fi
 
-# DELETE INSTANCES
+# DELETE INSTANCES 
 if [ "$ACTION" == "delete" ]; then
   for instance in "${SELECTED_INSTANCES[@]}"; do
     echo "Terminating EC2 instance: $instance ..."
