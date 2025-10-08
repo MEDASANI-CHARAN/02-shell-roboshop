@@ -61,26 +61,20 @@ if [ "$ACTION" == "create" ]; then
     echo "$instance IP address: $IP"
 
     # Create DNS record
-    if [ "$instance" == "frontend" ]; then
-  RECORD_NAME="$DOMAIN_NAME"
-else
-  RECORD_NAME="$instance.$DOMAIN_NAME"
-fi
-
-aws route53 change-resource-record-sets \
-  --hosted-zone-id $ZONE_ID \
-  --change-batch '{
-    "Comment": "Add record for '$instance'",
-    "Changes": [{
-      "Action": "UPSERT",
-      "ResourceRecordSet": {
-        "Name": "'$RECORD_NAME'",
-        "Type": "A",
-        "TTL": 300,
-        "ResourceRecords": [{"Value": "'$IP'"}]
-      }
-    }]
-  }' >/dev/null
+    aws route53 change-resource-record-sets \
+      --hosted-zone-id $ZONE_ID \
+      --change-batch '{
+        "Comment": "Add record for '$instance'",
+        "Changes": [{
+          "Action": "UPSERT",
+          "ResourceRecordSet": {
+            "Name": "'$instance'.'$DOMAIN_NAME'",
+            "Type": "A",
+            "TTL": 300,
+            "ResourceRecords": [{"Value": "'$IP'"}]
+          }
+        }]
+      }' >/dev/null
 
     echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
     echo "
@@ -89,7 +83,7 @@ aws route53 change-resource-record-sets \
   done
 fi
 
-# DELETE INSTANCES 
+# DELETE INSTANCES
 if [ "$ACTION" == "delete" ]; then
   for instance in "${SELECTED_INSTANCES[@]}"; do
     echo "Terminating EC2 instance: $instance ..."

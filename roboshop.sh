@@ -63,6 +63,12 @@ if [ "$ACTION" == "create" ]; then
     echo "$instance IP address: $IP"
 
     # Create DNS record
+    if [ "$instance" == "frontend" ]; then
+      RECORD_NAME="$DOMAIN_NAME"
+    else
+      RECORD_NAME="$instance.$DOMAIN_NAME"
+    fi
+
     aws route53 change-resource-record-sets \
       --hosted-zone-id $ZONE_ID \
       --change-batch '{
@@ -70,7 +76,7 @@ if [ "$ACTION" == "create" ]; then
         "Changes": [{
           "Action": "UPSERT",
           "ResourceRecordSet": {
-            "Name": "'$instance'.'$DOMAIN_NAME'",
+            "Name": "'$RECORD_NAME'",
             "Type": "A",
             "TTL": 300,
             "ResourceRecords": [{"Value": "'$IP'"}]
