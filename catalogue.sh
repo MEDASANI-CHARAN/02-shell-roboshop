@@ -42,8 +42,14 @@ VALIDATE $? "Enabling nodejs:20"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Instaling nodejs"
 
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-VALIDATE $? "creating roboshop system user"
+id roboshop &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
+    VALIDATE $? "Creating roboshop system user"
+else
+    echo -e "roboshop user already exists - $G SKIPPING $N" | tee -a $LOG_FILE
+fi
+
 
 mkdir /app &>>$LOG_FILE
 VALIDATE $? "creating app diectory"
@@ -75,7 +81,7 @@ cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
 VALIDATE $? "Copying MongoDB repo"
 
 dnf install mongodb-mongosh -y &>>$LOG_FILE
-VALIDATE $? "Installing MongoDB"
+VALIDATE $? "Installing MongoDB client"
 
 mongosh --host mongodb.daws2025.online </app/db/master-data.js &>>$LOG_FILE
 VALIDATE $? "Loading master data into MongoDB"
