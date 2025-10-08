@@ -78,4 +78,4 @@ dnf install mongodb-mongosh -y
 VALIDATE $? "Installing MongoDB"
 
 mongosh --host mongodb.daws2025.online </app/db/master-data.js
-VALIDATE $? "Loading master data into MongoDB"
+VALIDATE $? "Loading master data into MongoDB"  
