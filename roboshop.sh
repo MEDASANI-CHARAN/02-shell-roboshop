@@ -84,7 +84,7 @@ if [ "$ACTION" == "create" ]; then
         }]
       }' >/dev/null
 
-    echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
+    echo "DNS record created: $RECORD_NAME → $IP"
     echo "
 ===========================================================
     "
