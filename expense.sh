@@ -61,20 +61,26 @@ if [ "$ACTION" == "create" ]; then
     echo "$instance IP address: $IP"
 
     # Create DNS record
-    aws route53 change-resource-record-sets \
-      --hosted-zone-id $ZONE_ID \
-      --change-batch '{
-        "Comment": "Add record for '$instance'",
-        "Changes": [{
-          "Action": "UPSERT",
-          "ResourceRecordSet": {
-            "Name": "'$instance'.'$DOMAIN_NAME'",
-            "Type": "A",
-            "TTL": 300,
-            "ResourceRecords": [{"Value": "'$IP'"}]
-          }
-        }]
-      }' >/dev/null
+    if [ "$instance" == "frontend" ]; then
+  RECORD_NAME="$DOMAIN_NAME"
+else
+  RECORD_NAME="$instance.$DOMAIN_NAME"
+fi
+
+aws route53 change-resource-record-sets \
+  --hosted-zone-id $ZONE_ID \
+  --change-batch '{
+    "Comment": "Add record for '$instance'",
+    "Changes": [{
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "'$RECORD_NAME'",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [{"Value": "'$IP'"}]
+      }
+    }]
+  }' >/dev/null
 
     echo "DNS record created: $instance.$DOMAIN_NAME → $IP"
     echo "
@@ -101,7 +107,7 @@ if [ "$ACTION" == "delete" ]; then
       echo "No instance found with name: $instance"
     fi
     echo "
-    ===============================================================================
+=============================================================================
 "
   done
 fi
