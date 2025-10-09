@@ -91,6 +91,7 @@ then
     VALIDATE $? "Loading master data into MySQL"
 else
     echo "Data is already loaded into MySQL... $Y SKIPPING $N"
+fi
 
 systemctl restart shipping
 VALIDATE $? "Restarting the shipping"
