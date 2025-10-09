@@ -46,6 +46,9 @@ else
     echo -e "roboshop user already exists - $Y SKIPPING $N" | tee -a $LOG_FILE
 fi
 
+echo "Please enter the root password to setup:"
+read -s MYSQL_ROOT_PASSWORD
+
 mkdir -p /app &>>$LOG_FILE
 VALIDATE $? "creating app diectory"
 
@@ -79,13 +82,13 @@ VALIDATE $? "Starting shipping"
 dnf install mysql -y &>>$LOG_FILE
 VALIDATE $? "Installing MySQL client"
 
-mysql -h mysql.daws2025.online -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
+mysql -h mysql.daws2025.online -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/schema.sql &>>$LOG_FILE
 VALIDATE $? "Loading schema data into MySQL"
 
-mysql -h mysql.daws2025.online -uroot -pRoboShop@1 < /app/db/app-user.sql &>>$LOG_FILE
+mysql -h mysql.daws2025.online -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/app-user.sql &>>$LOG_FILE
 VALIDATE $? "Loading application user data into MySQL"
 
-mysql -h mysql.daws2025.online -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
+mysql -h mysql.daws2025.online -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/master-data.sql &>>$LOG_FILE
 VALIDATE $? "Loading master data into MySQL"
 
 systemctl restart shipping
