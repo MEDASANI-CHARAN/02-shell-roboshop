@@ -1,5 +1,7 @@
 #!/bin/bash
 
+START_TIME=$(date +%s)
+
 USERID=$(id -u)
 
 R="\e[31m"
@@ -50,3 +52,8 @@ VALIDATE $? "Enabling redis"
 
 systemctl start redis &>>$LOG_FILE
 VALIDATE $? "Starting redis"
+
+END_TIME=$(date +%s)
+TOTAL_TIME=$(($END_TIME - $START_TIME))
+
+echo -e "script execution completed successfully, $Y time taken: $TOTAL_time $N"
