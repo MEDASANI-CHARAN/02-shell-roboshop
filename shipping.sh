@@ -90,7 +90,7 @@ then
     mysql -h mysql.daws2025.online -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/master-data.sql &>>$LOG_FILE
     VALIDATE $? "Loading master data into MySQL"
 else
-    echo "Data is already loaded into MySQL... $Y SKIPPING $N"
+    echo -e "Data is already loaded into MySQL... $Y SKIPPING $N"
 fi
 
 systemctl restart shipping
