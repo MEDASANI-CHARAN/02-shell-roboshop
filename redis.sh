@@ -32,20 +32,21 @@ VALIDATE(){
     fi
 }
 
-dnf module disable redis -y
+dnf module disable redis -y &>>$LOG_FILE
 VALIDATE $? "Disabling default redis version"
 
-dnf module enable redis:7 -y
+dnf module enable redis:7 -y &>>$LOG_FILE
 VALIDATE $? "Enabling redis:7"
 
-dnf install redis -y 
+dnf install redis -y &>>$LOG_FILE
 VALIDATE $? "Installing redis"
 
 sudo sed -i -e 's/bind 127\.0\.0\.1/bind 0.0.0.0/' \
-            -e 's/protected-mode yes/protected-mode no/' /etc/redis/redis.conf
+            -e 's/protected-mode yes/protected-mode no/' /etc/redis/redis.conf &>>$LOG_FILE
+VALIDATE $? "Updating Redis configuration"
 
-systemctl enable redis 
+systemctl enable redis &>>$LOG_FILE
 VALIDATE $? "Enabling redis"
 
-systemctl start redis 
+systemctl start redis &>>$LOG_FILE
 VALIDATE $? "Starting redis"
