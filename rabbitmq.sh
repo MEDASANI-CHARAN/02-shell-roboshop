@@ -34,17 +34,24 @@ VALIDATE(){
     fi
 }
 
-echo "Please enter the root password to setup:"
-read -s 
+echo "Please enter the rabbitmq password to setup:"
+read -s RABBITMQ_PASSWORD
 
-dnf install rabbitmq -y &>>$LOG_FILE
-VALIDATE $? "Installing rabbitmq"
+cp rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
+VALIDATE $? "Copying rabbitmq"
 
-systemctl enable rabbitmq &>>$LOG_FILE
-VALIDATE $? "Enabling rabbitmq"
+dnf install rabbitmq-server -y &>>$LOG_FILE
+VALIDATE $? "Installing rabbitmq-server"
 
-systemctl start rabbitmq &>>$LOG_FILE
-VALIDATE $? "Starting rabbitmq"
+systemctl enable rabbitmq-server &>>$LOG_FILE
+VALIDATE $? "Enabling rabbitmq-server"
+
+systemctl start rabbitmq-server &>>$LOG_FILE
+VALIDATE $? "Starting rabbitmq-server"
+
+rabbitmqctl add_user roboshop $RABBITMQ_PASSWORD
+rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
+VALIDATE $? "Settingup usename & password for rabbitmq"
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME - $START_TIME))
